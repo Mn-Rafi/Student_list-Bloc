@@ -19,6 +19,9 @@ class ScreenHome extends StatelessWidget {
     String searchValue = '';
     return Scaffold(
       appBar: AppBar(
+        foregroundColor: Colors.black,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
         title: const Text('List of students'),
       ),
       body: Column(
@@ -55,71 +58,102 @@ class ScreenHome extends StatelessWidget {
               late List<StudentDb> dbList;
 
               dbList = state.list;
-              print('OKKKDAAAAAAAAAAAAAAAAAAA == ${state.list.length}');
-              print('ENNEDAAAAAAAAAAAAAAAAAAAAAAAAAA ==  ${dbList.length}');
               return dbList.isNotEmpty
-                  ? ListView.separated(
-                      separatorBuilder: (context, index) => const SizedBox(
-                        height: 10,
-                      ),
+                  ? ListView.builder(
                       itemCount: dbList.length,
                       itemBuilder: (context, index) => Card(
-                        margin: const EdgeInsets.all(10),
-                        child: ListTile(
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => ScreenDetails(
-                                      imagePath: dbList[index].imageUrl,
-                                      initialAge: dbList[index].age,
-                                      initialDomain: dbList[index].domain,
-                                      initialName: dbList[index].name,
-                                    )));
-                          },
-                          title: Text(dbList[index].name),
-                          leading: dbList[index].imageUrl == null
-                              ? const CircleAvatar(
-                                  backgroundColor: Colors.blue,
-                                )
-                              : CircleAvatar(
-                                  backgroundImage: FileImage(
-                                    File(dbList[index].imageUrl!),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Stack(
+                            children: [
+                              Positioned(
+                                  top: -20,
+                                  left: -60,
+                                  child: Container(
+                                      height: 250,
+                                      width: 250,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: const Color.fromARGB(
+                                                  255, 141, 236, 255)
+                                              .withOpacity(0.5)
+                                              .withOpacity(
+                                                  0.5) //background color with opacity
+                                          ))),
+                              Positioned(
+                                  right: -120,
+                                  top: -50,
+                                  child: Container(
+                                      height: 180,
+                                      width: 180,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: const Color.fromARGB(
+                                                  255, 90, 212, 252)
+                                              .withOpacity(0.5)))),
+                              Positioned(
+                                child: ListTile(
+                                  onTap: () {
+                                    Navigator.of(context).push(MaterialPageRoute(
+                                        builder: (context) => ScreenDetails(
+                                              imagePath: dbList[index].imageUrl,
+                                              initialAge: dbList[index].age,
+                                              initialDomain: dbList[index].domain,
+                                              initialName: dbList[index].name,
+                                            )));
+                                  },
+                                  title: Text(dbList[index].name),
+                                  leading: dbList[index].imageUrl == null
+                                      ? const CircleAvatar(
+                                          backgroundColor: Colors.blue,
+                                        )
+                                      : CircleAvatar(
+                                          backgroundImage: FileImage(
+                                            File(dbList[index].imageUrl!),
+                                          ),
+                                        ),
+                                  trailing: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: const Icon(Icons.edit),
+                                        onPressed: () async {
+                                          await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (ctx) => ManageAddStudent(
+                                                searchKey: searchValue,
+                                                appBar: "Edit Student",
+                                                dbKey: dbList[index].key,
+                                                imagePath: dbList[index].imageUrl,
+                                                initialAge: dbList[index].age,
+                                                initialDomain:
+                                                    dbList[index].domain,
+                                                initialName: dbList[index].name,
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                      IconButton(
+                                        icon: const Icon(Icons.delete),
+                                        onPressed: () {
+                                          context
+                                              .read<StudentlistCubit>()
+                                              .delete(dbList[index].key);
+                                          context
+                                              .read<StudentlistCubit>()
+                                              .allStudents(
+                                                Hive.box<StudentDb>(studentDb)
+                                                    .values
+                                                    .toList(),
+                                              );
+                                        },
+                                      )
+                                    ],
                                   ),
                                 ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () async {
-                                  await Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (ctx) => ManageAddStudent(
-                                        searchKey: searchValue,
-                                        appBar: "Edit Student",
-                                        dbKey: dbList[index].key,
-                                        imagePath: dbList[index].imageUrl,
-                                        initialAge: dbList[index].age,
-                                        initialDomain: dbList[index].domain,
-                                        initialName: dbList[index].name,
-                                      ),
-                                    ),
-                                  );
-                                },
                               ),
-                              IconButton(
-                                icon: const Icon(Icons.delete),
-                                onPressed: () {
-                                  context
-                                      .read<StudentlistCubit>()
-                                      .delete(dbList[index].key);
-                                  context.read<StudentlistCubit>().allStudents(
-                                        Hive.box<StudentDb>(studentDb)
-                                            .values
-                                            .toList(),
-                                      );
-                                },
-                              )
                             ],
                           ),
                         ),

@@ -19,9 +19,6 @@ class SearchBloc extends Bloc<SearchEvent, SearchState> {
                 element.name.toLowerCase().contains(event.input.toLowerCase()))
             .toList();
         emit(SearchInitial(allStudents: newListofStudents));
-
-        print('SAKKUDUUUUUUUUUUUUUUU');
-        print(newListofStudents.length);
       } else if (event is ClearValues) {
         emit(SearchInitial(
             allStudents: Hive.box<StudentDb>(studentDb).values.toList()));
