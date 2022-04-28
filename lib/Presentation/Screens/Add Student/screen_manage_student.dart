@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:student_list_bloc/Logic/cubit/studentlist_cubit.dart';
 
+import 'package:student_list_bloc/Logic/bloc/search_bloc.dart';
+import 'package:student_list_bloc/Logic/cubit/studentlist_cubit.dart';
 import 'package:student_list_bloc/Presentation/Widgets/custom_button.dart';
 import 'package:student_list_bloc/Presentation/Widgets/customtextformfield.dart';
 import 'package:student_list_bloc/data/studentdb.dart';
@@ -18,6 +19,7 @@ class ManageAddStudent extends StatefulWidget {
   final String? initialAge;
   final String? initialDomain;
   final int? dbKey;
+  final String searchKey;
   const ManageAddStudent({
     Key? key,
     required this.appBar,
@@ -26,6 +28,7 @@ class ManageAddStudent extends StatefulWidget {
     this.initialAge,
     this.initialDomain,
     this.dbKey,
+    required this.searchKey,
   }) : super(key: key);
 
   @override
@@ -38,6 +41,7 @@ class _ManageAddStudentState extends State<ManageAddStudent> {
   String? newDmain;
   int? keyFact;
   String? newImagePath;
+
   // final _formKey = GlobalKey<FormState>();
   Box<StudentDb> box = Hive.box<StudentDb>(studentDb);
 
@@ -152,9 +156,8 @@ class _ManageAddStudentState extends State<ManageAddStudent> {
             age: newAge!,
             domain: newDmain!,
             imageUrl: newImagePath));
-        context
-            .read<StudentlistCubit>()
-            .allStudents(Hive.box<StudentDb>(studentDb).values.toList());
+
+        context.read<SearchBloc>().add(EnterValues(input: widget.searchKey));
         Navigator.of(context).pop();
       } else {
         box.put(
@@ -164,9 +167,7 @@ class _ManageAddStudentState extends State<ManageAddStudent> {
                 age: newAge!,
                 domain: newDmain!,
                 imageUrl: newImagePath));
-        context
-            .read<StudentlistCubit>()
-            .allStudents(Hive.box<StudentDb>(studentDb).values.toList());
+        context.read<SearchBloc>().add(EnterValues(input: widget.searchKey));
         Navigator.of(context).pop();
       }
     }

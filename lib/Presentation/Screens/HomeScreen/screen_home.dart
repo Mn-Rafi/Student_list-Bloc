@@ -16,6 +16,7 @@ class ScreenHome extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String searchValue = '';
     return Scaffold(
       appBar: AppBar(
         title: const Text('List of students'),
@@ -28,6 +29,7 @@ class ScreenHome extends StatelessWidget {
             child: TextField(
                 onChanged: (value) {
                   context.read<SearchBloc>().add(EnterValues(input: value));
+                  searchValue = value;
                 },
                 decoration: InputDecoration(
                   focusedBorder: OutlineInputBorder(
@@ -93,6 +95,7 @@ class ScreenHome extends StatelessWidget {
                                     context,
                                     MaterialPageRoute(
                                       builder: (ctx) => ManageAddStudent(
+                                        searchKey: searchValue,
                                         appBar: "Edit Student",
                                         dbKey: dbList[index].key,
                                         imagePath: dbList[index].imageUrl,
@@ -132,8 +135,9 @@ class ScreenHome extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (ctx) => const ManageAddStudent(
+              builder: (ctx) => ManageAddStudent(
                 appBar: "Add Student",
+                searchKey: searchValue,
               ),
             ),
           );
