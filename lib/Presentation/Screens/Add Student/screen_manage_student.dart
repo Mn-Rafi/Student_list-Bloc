@@ -136,10 +136,16 @@ class _ManageAddStudentState extends State<ManageAddStudent> {
   }
 
   submitFunction() async {
-    if (newName != '' &&
-        newDmain != '' &&
-        newAge != '' &&
-        newImagePath != null) {
+    if (newName == '' ||
+        newDmain == '' ||
+        newAge == '' ||
+        newName == null ||
+        newDmain == null ||
+        newAge == null ||
+        newImagePath == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('All fields are required')));
+    } else {
       if (keyFact == null) {
         box.add(StudentDb(
             name: newName!,
@@ -163,9 +169,6 @@ class _ManageAddStudentState extends State<ManageAddStudent> {
             .allStudents(Hive.box<StudentDb>(studentDb).values.toList());
         Navigator.of(context).pop();
       }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('All fields are required')));
     }
   }
 }
